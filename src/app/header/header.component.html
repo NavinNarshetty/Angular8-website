@@ -5,18 +5,32 @@
          href="#">WebSiteName</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active">
+      <li routerLinkActive="active"
+          [routerLinkActiveOptions]="{
+            exact:true
+       }">
         <a href="#">Home</a>
       </li>
-      <li>
-        <a href="#">Page 1</a>
+      <li *ngIf="!isAuthenticated"
+          routerLinkActive="active">
+        <a routerLink="/login">Login</a>
       </li>
-      <li>
-        <a href="#">Page 2</a>
+      <li *ngIf="isAuthenticated"
+          routerLinkActive="active">
+        <a routerLink="/welcome">Welcome</a>
       </li>
-      <li>
+      <li *ngIf="isAuthenticated"
+          routerLinkActive="active">
         <a href="#">Page 3</a>
       </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li style="cursor: pointer;"
+          *ngIf="isAuthenticated"
+          (click)="onLogout()">
+        <a>Logout</a>
+      </li>
+
     </ul>
   </div>
 </nav>
