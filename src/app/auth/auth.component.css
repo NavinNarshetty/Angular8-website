@@ -1,0 +1,11 @@
+
+input.ng-invalid.ng-touched{
+  border: 1px solid red;
+}
+
+.danger{
+  color: red;
+}
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control{
+  background-color: #337ab7;
+}
