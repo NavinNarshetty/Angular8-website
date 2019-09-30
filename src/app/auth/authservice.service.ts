@@ -33,7 +33,7 @@ export class AuthserviceService {
   private API_URL_SIGNUP = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key="
   private API_URL_LOGIN = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="
 
-  private API_KEY = "AIzaSyBuXglpPgH4jBdn8XElf80WXts_kIvhmTA"
+  private API_KEY = "YOUR_API_KEY";
   private tokenExpirationtimer: any;
   constructor(private http: HttpClient, private router: Router) {
 
