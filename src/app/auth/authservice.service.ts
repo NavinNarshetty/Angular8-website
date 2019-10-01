@@ -4,6 +4,9 @@ import { catchError, tap } from "rxjs/operators";
 import { throwError, Subject, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import * as fromApp from "../../app/store/app.reducer";
+import * as fromAuthaction from '../auth/store/auth.action'
 
 interface SignUp {
   email: string,
@@ -28,14 +31,14 @@ interface AuthenticateData {
 })
 
 export class AuthserviceService {
-  public user = new BehaviorSubject<User>(null);
+  // public user = new BehaviorSubject<User>(null);
 
   private API_URL_SIGNUP = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key="
   private API_URL_LOGIN = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="
 
-  private API_KEY = "YOUR_API_KEY";
+  private API_KEY = "AIzaSyBuXglpPgH4jBdn8XElf80WXts_kIvhmTA";
   private tokenExpirationtimer: any;
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private store: Store<fromApp.AppState>) {
 
   }
 
@@ -61,7 +64,8 @@ export class AuthserviceService {
 
   logout() {
     this.router.navigate(['/login']);
-    this.user.next(null);
+    // this.user.next(null);
+    this.store.dispatch(new fromAuthaction.Logout());
     localStorage.removeItem("userData");
     if (this.tokenExpirationtimer) {
       clearTimeout(this.tokenExpirationtimer);
@@ -84,7 +88,15 @@ export class AuthserviceService {
     let loadedUser = new User(userData.email, userData.id, userData._token, new Date(userData._tokenExpirationDate));
     if (loadedUser.token) {
       const expirationvalue = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime()
-      this.user.next(loadedUser);
+      // this.user.next(loadedUser);
+      this.store.dispatch(new fromAuthaction.Login(
+        {
+          email: loadedUser.email,
+          id: loadedUser.id,
+          token: loadedUser.token,
+          expirationDate: new Date(userData._tokenExpirationDate)
+        }
+      ))
       this.autoLogout(expirationvalue);
     }
   }
@@ -100,7 +112,13 @@ export class AuthserviceService {
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
     const user = new User(email, id, token, expirationDate);
     console.log(user, "user");
-    this.user.next(user);
+    // this.user.next(user);
+    this.store.dispatch(new fromAuthaction.Login({
+      email: email,
+      id: id,
+      token: token,
+      expirationDate: expirationDate
+    }))
     this.autoLogout(expiresIn * 1000);
     localStorage.setItem("userData", JSON.stringify(user));
   }
