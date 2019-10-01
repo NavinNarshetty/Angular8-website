@@ -10,6 +10,8 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { HttpClientModule } from "@angular/common/http";
 import { LoaderComponent } from './loader/loader.component';
 import { AuthGaurd } from './auth/auth.gaurd';
+import { StoreModule } from '@ngrx/store';
+import * as fromApp from './store/app.reducer'
 
 
 const appRouter: Routes = [{
@@ -38,6 +40,7 @@ const appRouter: Routes = [{
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot(appRouter),
+    StoreModule.forRoot(fromApp.appReducer)
   ],
   providers: [],
   bootstrap: [AppComponent]
