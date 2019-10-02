@@ -3,6 +3,7 @@ import { AuthserviceService } from '../auth/authservice.service';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../store/app.reducer'
+import * as fromAuthaction from '../auth/store/auth.action'
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -17,19 +18,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthserviceService, private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    this.firstsubscription = this.store.select('auth').pipe(map((userData) => {
-      return userData.user
-    })).subscribe((userData) => {
-      if (userData) {
-        // console.log(userData, "userdata")
-        return this.isAuthenticated = true;
+    this.firstsubscription = this.store.select('auth').subscribe((userData) => {
+      if (userData.user) {
+        this.isAuthenticated = true;
+      } else {
+        this.isAuthenticated = false;
       }
-      return false;
     })
   }
 
   onLogout() {
-    this.authService.logout();
+    this.store.dispatch(new fromAuthaction.Logout());
     this.isAuthenticated = false;
   }
 

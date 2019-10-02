@@ -12,6 +12,8 @@ import { LoaderComponent } from './loader/loader.component';
 import { AuthGaurd } from './auth/auth.gaurd';
 import { StoreModule } from '@ngrx/store';
 import * as fromApp from './store/app.reducer'
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffect } from './auth/store/auth.effect';
 
 
 const appRouter: Routes = [{
@@ -40,7 +42,8 @@ const appRouter: Routes = [{
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot(appRouter),
-    StoreModule.forRoot(fromApp.appReducer)
+    StoreModule.forRoot(fromApp.appReducer),
+    EffectsModule.forRoot([AuthEffect])
   ],
   providers: [],
   bootstrap: [AppComponent]
