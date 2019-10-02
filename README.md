@@ -16,3 +16,9 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 The given branch has implementation of a basic signup and login page using Angular 8 , with auto login and logout functionality.
 
+The form has been implemented using the ngrx with action reducer and effects to ensure a proper state management throught the application.
+
+To use the code a  API_KEY(FIRE BASE API KEY) is required in app/auth/store/auth.effect.ts and you are good to go.
+
+
+
