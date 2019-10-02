@@ -3,6 +3,10 @@ import { Form, NgForm } from '@angular/forms';
 import { AuthserviceService } from './authservice.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import * as fromApp from '../store/app.reducer'
+import * as fromAutactions from '../auth/store/auth.action'
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth',
@@ -17,35 +21,30 @@ export class AuthComponent implements OnInit {
   isLoggedIn: boolean = false;
   isLoading: boolean = false;
   authSub: Observable<any>
-  constructor(private authservice: AuthserviceService, private route: Router) { }
+  constructor(private authservice: AuthserviceService, private route: Router, private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
+    this.store.select('auth').subscribe((authData) => {
+      this.isLoading = authData.loading;
+      this.errorMessage = authData.authError;
+    })
   }
 
   onSubmit(signupForm: NgForm) {
-    console.log(signupForm)
     if (!signupForm.valid) {
       return null;
     }
     if (this.isLoggedIn) {
-      this.isLoading = true;
-      this.authSub = this.authservice.login(signupForm.value);
+      this.store.dispatch(new fromAutactions.Loginstart({
+        email: signupForm.value.email,
+        password: signupForm.value.password
+      }))
     } else {
-
-      this.isLoading = true;
-      this.authSub = this.authservice.signup(signupForm.value);
+      this.store.dispatch(new fromAutactions.SignUp({
+        email: signupForm.value.email,
+        password: signupForm.value.password
+      }))
     }
-
-    this.authSub.subscribe((responseData) => {
-      // console.log(responseData);
-      this.isLoading = false;
-      if (this.isLoggedIn) {
-        this.route.navigate(["/welcome"])
-      }
-    }, (error) => {
-      this.isLoading = false;
-      this.errorMessage = error;
-    })
     signupForm.reset();
   }
 
